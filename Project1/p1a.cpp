@@ -13,8 +13,10 @@ using namespace std;
 
 #include "d_except.h"
 #include "d_matrix.h"
-#include "graph.h"
+#include <boost/graph/adjacency_list.hpp>
 #include "knapsack.h"
+
+void exhaustiveKnapsack(knapsack &sack, int seconds);
 
 int main()
 {
@@ -28,15 +30,31 @@ int main()
    
    // fileName = "knapsack16.input";
 
-   cout << "Enter filename" << endl;
-   cin >> fileName;
-   
-   fin.open(fileName.c_str());
-   if (!fin)
+   vector<std::string> s;
+   s.push_back("knapsack/knapsack8.input");
+   s.push_back("knapsack/knapsack12.input");
+   s.push_back("knapsack/knapsack16.input");
+   s.push_back("knapsack/knapsack20.input");
+   s.push_back("knapsack/knapsack28.input");
+   s.push_back("knapsack/knapsack32.input");
+   s.push_back("knapsack/knapsack48.input");
+   s.push_back("knapsack/knapsack64.input");
+   s.push_back("knapsack/knapsack128.input");
+   s.push_back("knapsack/knapsack256.input");
+   s.push_back("knapsack/knapsack512.input");
+   s.push_back("knapsack/knapsack1024.input");
+
+   for (int i = 0; i < s.size(); i++)
    {
-      cerr << "Cannot open " << fileName << endl;
-      exit(1);
-   }
+	   cout << "Enter filename" << endl;
+	   cin >> fileName;
+	   //fileName = s[i];
+	   fin.open(fileName.c_str());
+	   if (!fin)
+	   {
+		   cerr << "Cannot open " << fileName << endl;
+		   exit(1);
+	   }
 
    try
    {
@@ -60,3 +78,5 @@ int main()
    }
 }
 
+void exhaustiveKnapsack(knapsack & sack, int seconds)
+{}
