@@ -4,6 +4,7 @@
 #include <limits.h>
 #include "d_except.h"
 #include <fstream>
+#include <time.h>
 
 #include <boost/graph/adjacency_list.hpp>
 
@@ -21,83 +22,126 @@ typedef adjacency_list<vecS, vecS, bidirectionalS, VertexProperties, EdgePropert
 
 struct VertexProperties
 {
-   pair<int,int> cell; // maze cell (x,y) value
-   Graph::vertex_descriptor pred;
-   bool visited;
-   bool marked;
-   int weight;
+	pair<int, int> cell; // maze cell (x,y) value
+	Graph::vertex_descriptor pred;
+	bool visited;
+	bool marked;
+	int weight;
+	int color;
 };
 
 // Create a struct to hold properties for each edge
 struct EdgeProperties
 {
-   int weight;
-   bool visited;
-   bool marked;
+	int weight;
+	bool visited;
+	bool marked;
 };
 
 void initializeGraph(Graph &g, ifstream &fin)
-// Initialize g using data from fin.  
+// Initialize g using data from fin.
 {
-   int n, e;
-   int j,k;
+	int n, e;
+	int j, k;
 
-   fin >> n >> e;
-   Graph::vertex_descriptor v;
-   
-   // Add nodes.
-   for (int i = 0; i < n; i++)
-      v = add_vertex(g);
-   
-   for (int i = 0; i < e; i++)
-   {
-      fin >> j >> k;
-      add_edge(j,k,g);  // Assumes vertex list is type vecS
-   }
+	fin >> n >> e;
+	Graph::vertex_descriptor v;
+
+	// Add nodes.
+	for (int i = 0; i < n; i++)
+		v = add_vertex(g);
+
+	for (int i = 0; i < e; i++)
+	{
+		fin >> j >> k;
+		add_edge(j, k, g);  // Assumes vertex list is type vecS
+	}
 }
 
 void setNodeWeights(Graph &g, int w)
 // Set all node weights to w.
 {
-   pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
-   
-   for (Graph::vertex_iterator vItr= vItrRange.first; vItr != vItrRange.second; ++vItr)
-   {
-      g[*vItr].weight = w;
-   }
+	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
+
+	for (Graph::vertex_iterator vItr = vItrRange.first; vItr != vItrRange.second; ++vItr)
+	{
+		g[*vItr].weight = w;
+	}
+}
+
+void setNodeColors(Graph &g, int c)
+// Set all node weights to w.
+{
+	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
+
+	for (Graph::vertex_iterator vItr = vItrRange.first; vItr != vItrRange.second; ++vItr)
+	{
+		g[*vItr].color = c;
+	}
 }
 
 int main()
 {
-   char x;
-   ifstream fin;
-   string fileName;
-   
-   // Read the name of the graph from the keyboard or
-   // hard code it here for testing.
-   
-   fileName = "/Users/wmeleis/2560-code/tree2/tree/graph1.txt";
-   
-   //   cout << "Enter filename" << endl;
-   //   cin >> fileName;
-   
-   fin.open(fileName.c_str());
-   if (!fin)
-   {
-      cerr << "Cannot open " << fileName << endl;
-      exit(1);
-   }
-   
-   try
-    {
-      cout << "Reading graph" << endl;
-      Graph g;
-      initializeGraph(g,fin);
+	char x;
+	ifstream fin;
+	string fileName;
 
-      cout << "Num nodes: " << num_vertices(g) << endl;
-      cout << "Num edges: " << num_edges(g) << endl;
-      cout << endl;
-      
-      // cout << g;
-   }
+	// Read the name of the graph from the keyboard or
+	// hard code it here for testing.
+
+	fileName = "/Users/wmeleis/2560-code/tree2/tree/graph1.txt";
+
+	//   cout << "Enter filename" << endl;
+	//   cin >> fileName;
+
+	fin.open(fileName.c_str());
+	if (!fin)
+	{
+		cerr << "Cannot open " << fileName << endl;
+		exit(1);
+	}
+
+	try
+	{
+		cout << "Reading graph" << endl;
+		Graph g;
+		int numColors;
+		int numConflicts = -1;
+		fin >> numColors;
+		initializeGraph(g, fin);
+
+		cout << "Num nodes: " << num_vertices(g) << endl;
+		cout << "Num edges: " << num_edges(g) << endl;
+		cout << endl;
+
+		// cout << g;
+
+		numConflicts = exhaustiveColoring(g, numColors, 600);
+		//printSolution(g, numConflicts);
+
+	}
+	catch (indexRangeError &ex)
+	{
+		cout << ex.what() << endl; exit(1);
+	}
+	catch (rangeError &ex)
+	{
+		cout << ex.what() << endl; exit(1);
+	}
+}
+
+int exhaustiveColoring(Graph &g, int numColors, int t)
+{
+	int numConflicts = INT_MAX;
+	setNodeColors(g, 0);
+
+	clock_t startTime = clock();
+
+
+
+	// Check if time is expired and return
+	if ((clock() - startTime) / CLOCKS_PER_SEC >= t)
+	{
+		return numConflicts;
+	}
 }

@@ -36,4 +36,42 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="colors\color.format">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color12-3.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color12-4.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color24-4.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color24-5.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color48-5.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color48-6.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color96-6.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color96-7.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color192-6.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color192-7.input">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="colors\color192-8.input">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
