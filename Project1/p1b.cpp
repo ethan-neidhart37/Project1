@@ -80,6 +80,20 @@ void setNodeColors(Graph &g, int c)
 	}
 }
 
+int checkConflicts(Graph &g)
+{
+	int numConflicts = 0;
+	pair<Graph::edge_iterator, Graph::edge_iterator> eItrRange = edges(g);
+	for (Graph::edge_iterator eItr = eItrRange.first; eItr != eItrRange.second; ++eItr)
+	{
+		Graph::vertex_descriptor t = target(*eItr, g);
+		Graph::vertex_descriptor s = source(*eItr, g);
+		if (g[t].color == g[s].color)
+			numConflicts++;
+	}
+	return numConflicts;
+}
+
 int main()
 {
 	char x;
@@ -89,7 +103,8 @@ int main()
 	// Read the name of the graph from the keyboard or
 	// hard code it here for testing.
 
-	fileName = "/Users/wmeleis/2560-code/tree2/tree/graph1.txt";
+	string fileFolder = "C:\\Users\\Ethan\\Documents\\GitHub\\Algorithms\\Project1\\Project1\\colors\\";
+	fileName = fileFolder + "color12-3.input";
 
 	//   cout << "Enter filename" << endl;
 	//   cin >> fileName;
@@ -132,11 +147,14 @@ int main()
 
 int exhaustiveColoring(Graph &g, int numColors, int t)
 {
-	int numConflicts = INT_MAX;
-	setNodeColors(g, 0);
-
 	clock_t startTime = clock();
 
+	setNodeColors(g, 1);
+	int numConflicts = checkConflicts(g);
+
+	for (int color = 1; color <= numColors; color++) {
+
+	}
 
 
 	// Check if time is expired and return
