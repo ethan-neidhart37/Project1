@@ -1,3 +1,5 @@
+// File: p1b.cpp
+// Author: Ethan Neidhart
 // Code to read graph instances from a file.  Uses the Boost Graph Library (BGL).
 
 #include <iostream>
@@ -58,6 +60,17 @@ void initializeGraph(Graph &g, ifstream &fin)
 	}
 }
 
+void cloneGraphColors(Graph &g, Graph &c)
+// Takes two graphs with the same nodes and sets the colors of c to the colors of g.
+{
+	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
+
+	for (Graph::vertex_iterator vItr = vItrRange.first; vItr != vItrRange.second; ++vItr)
+	{
+		c[*vItr].color= g[*vItr].color;
+	}
+}
+
 void setNodeWeights(Graph &g, int w)
 // Set all node weights to w.
 {
@@ -80,33 +93,62 @@ void setNodeColors(Graph &g, int c)
 	}
 }
 
+void setNodeMarks(Graph &g, bool b)
+// Set all node weights to w.
+{
+	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
+
+	for (Graph::vertex_iterator vItr = vItrRange.first; vItr != vItrRange.second; ++vItr)
+	{
+		g[*vItr].marked = b;
+	}
+}
+
 int checkConflicts(Graph &g)
 // Return the number of nodes in conflict in a graph.
 // For each edge with two nodes of the same color, there is one node in conflict.
 {
 	int numConflicts = 0;
+	setNodeMarks(g, false);
 	pair<Graph::edge_iterator, Graph::edge_iterator> eItrRange = edges(g);
 	for (Graph::edge_iterator eItr = eItrRange.first; eItr != eItrRange.second; ++eItr)
 	{
 		Graph::vertex_descriptor t = target(*eItr, g);
 		Graph::vertex_descriptor s = source(*eItr, g);
 		if (g[t].color == g[s].color)
-			numConflicts++;
+		{
+			if (!g[t].marked)
+			{
+				numConflicts++;
+				g[t].marked = true;
+			}
+			if (!g[s].marked)
+			{
+				numConflicts++;
+				g[s].marked = true;
+			}
+		}
 	}
 	return numConflicts;
 }
 
-void increment(Graph &g, Graph::vertex_iterator vItr, int numColors, Graph::vertex_iterator vEnd)
+bool increment(Graph &g, Graph::vertex_iterator vItr, int numColors, Graph::vertex_iterator vEnd)
 // Used to cycle through all the different permutations of graph coloring, one at a time.
 // With all vertices stored in a linear array, and all colors represented by integers,
 // the graph functions in a remarkably similar way to a counter.
+// Returns true if last value of counter has been reached, false otherwise.
 {
 	g[*vItr].color++;
 	if (g[*vItr].color == numColors)
 	{
 		g[*vItr].color = 0;
-		increment(g, vItr + 1, numColors, vEnd);
+		++vItr;
+		if (vItr == vEnd)
+			return true;
+		else
+			increment(g, vItr, numColors, vEnd);
 	}
+	return false;
 }
 
 int exhaustiveColoring(Graph &g, int numColors, int t)
@@ -119,26 +161,39 @@ int exhaustiveColoring(Graph &g, int numColors, int t)
 	setNodeColors(g, 0);
 	int numConflicts = checkConflicts(g);
 	int tempNumConflicts = numConflicts;
+	bool finished = false;
+	Graph minGraph(num_vertices(g));
+	cloneGraphColors(g, minGraph);
 
 	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
 
-	for (Graph::vertex_iterator vItr = vItrRange.first; vItr != vItrRange.second; ++vItr)
+	for (;;)
 	{
-		for (int color = 1; color < numColors; color++) {
-			increment(g, vItrRange.first, numColors, vItrRange.second);
-			tempNumConflicts = checkConflicts(g);
+		finished = increment(g, vItrRange.first, numColors, vItrRange.second);
+		
+		if (finished)
+			break;
 
-			if (tempNumConflicts < numConflicts) {
-				numConflicts = tempNumConflicts;
-			}
+		tempNumConflicts = checkConflicts(g);
 
-			// Check if time is expired and return
-			if ((clock() - startTime) / CLOCKS_PER_SEC >= t)
-			{
-				return numConflicts;
-			}
+		if (tempNumConflicts < numConflicts) {
+			numConflicts = tempNumConflicts;
+			cloneGraphColors(g, minGraph);
 		}
+
+		if (numConflicts == 0)
+			break;
+
+		// Check if time is expired and return
+		if ((clock() - startTime) / CLOCKS_PER_SEC >= t)
+			break;
+
+		//cout << "Conflicts: " << tempNumConflicts << endl;
 	}
+
+	cloneGraphColors(minGraph, g);
+
+	return numConflicts;
 }
 
 void printSolution(Graph &g, int numConflicts, string filename)
@@ -155,7 +210,9 @@ void printSolution(Graph &g, int numConflicts, string filename)
 	myfile.close();
 }
 
-int main()
+int graphColoring()
+// Exhaustively finds the most efficient graph coloring solution (in 10 minute limit)
+// Takes in an input file for graph, results in output file
 {
 	char x;
 	ifstream fin;
@@ -164,11 +221,13 @@ int main()
 	// Read the name of the graph from the keyboard or
 	// hard code it here for testing.
 
+	// Hard-coded location of files so that only file name must be entered
 	string fileFolder = "C:\\Users\\Ethan\\Documents\\GitHub\\Algorithms\\Project1\\Project1\\colors\\";
-	fileName = "color12-3";
 
-	//   cout << "Enter filename" << endl;
-	//   cin >> fileName;
+	//fileName = "color12-3";
+
+	cout << "Enter filename: ";
+	cin >> fileName;
 
 	fileName = fileFolder + fileName;
 
@@ -196,7 +255,6 @@ int main()
 
 		numConflicts = exhaustiveColoring(g, numColors, 600);
 		printSolution(g, numConflicts, fileName);
-
 	}
 	catch (indexRangeError &ex)
 	{
@@ -206,5 +264,6 @@ int main()
 	{
 		cout << ex.what() << endl; exit(1);
 	}
+
 }
 
