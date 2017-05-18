@@ -142,6 +142,7 @@ int exhaustiveColoring(Graph &g, int numColors, int t)
 }
 
 void printSolution(Graph &g, int numConflicts, string filename)
+// Print the solution found.
 {
 	ofstream myfile;
 	myfile.open((filename + ".output").c_str());
@@ -164,10 +165,12 @@ int main()
 	// hard code it here for testing.
 
 	string fileFolder = "C:\\Users\\Ethan\\Documents\\GitHub\\Algorithms\\Project1\\Project1\\colors\\";
-	fileName = fileFolder + "color12-3";
+	fileName = "color12-3";
 
 	//   cout << "Enter filename" << endl;
 	//   cin >> fileName;
+
+	fileName = fileFolder + fileName;
 
 	fin.open((fileName + ".input").c_str());
 	if (!fin)
@@ -192,7 +195,7 @@ int main()
 		// cout << g;
 
 		numConflicts = exhaustiveColoring(g, numColors, 600);
-		//printSolution(g, numConflicts);
+		printSolution(g, numConflicts, fileName);
 
 	}
 	catch (indexRangeError &ex)
