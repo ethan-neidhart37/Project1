@@ -75,6 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Ethan\Documents\boost_1_57_0\</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,6 +120,20 @@
     <ClInclude Include="d_matrix.h" />
     <ClInclude Include="d_random.h" />
     <ClInclude Include="knapsack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="colors\color.format" />
+    <None Include="colors\color12-3.input" />
+    <None Include="colors\color12-4.input" />
+    <None Include="colors\color192-6.input" />
+    <None Include="colors\color192-7.input" />
+    <None Include="colors\color192-8.input" />
+    <None Include="colors\color24-4.input" />
+    <None Include="colors\color24-5.input" />
+    <None Include="colors\color48-5.input" />
+    <None Include="colors\color48-6.input" />
+    <None Include="colors\color96-6.input" />
+    <None Include="colors\color96-7.input" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
