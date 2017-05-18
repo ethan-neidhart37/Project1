@@ -1,5 +1,8 @@
 // Knapsack class
 // Version f08.1
+#include <iostream>
+
+using namespace std;
 
 class knapsack
 {

@@ -119,7 +119,7 @@
     <ClInclude Include="knapsack.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="p1a.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
