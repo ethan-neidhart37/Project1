@@ -70,7 +70,7 @@ void setNodeWeights(Graph &g, int w)
 }
 
 void setNodeColors(Graph &g, int c)
-// Set all node weights to w.
+// Set all node colors to c (integer representation of a color).
 {
 	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
 
@@ -81,6 +81,8 @@ void setNodeColors(Graph &g, int c)
 }
 
 int checkConflicts(Graph &g)
+// Return the number of nodes in conflict in a graph.
+// For each edge with two nodes of the same color, there is one node in conflict.
 {
 	int numConflicts = 0;
 	pair<Graph::edge_iterator, Graph::edge_iterator> eItrRange = edges(g);
@@ -95,6 +97,9 @@ int checkConflicts(Graph &g)
 }
 
 void increment(Graph &g, Graph::vertex_iterator vItr, int numColors, Graph::vertex_iterator vEnd)
+// Used to cycle through all the different permutations of graph coloring, one at a time.
+// With all vertices stored in a linear array, and all colors represented by integers,
+// the graph functions in a remarkably similar way to a counter.
 {
 	g[*vItr].color++;
 	if (g[*vItr].color == numColors)
@@ -105,11 +110,15 @@ void increment(Graph &g, Graph::vertex_iterator vItr, int numColors, Graph::vert
 }
 
 int exhaustiveColoring(Graph &g, int numColors, int t)
+// Increment through all permutations of the graph using the increment() function.
+// Check number of conflicts, and store lowest number that has been checked.
+// Return number of conflicts when done, or when time t has passed.
 {
 	clock_t startTime = clock();
 
 	setNodeColors(g, 0);
 	int numConflicts = checkConflicts(g);
+	int tempNumConflicts = numConflicts;
 
 	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
 
@@ -117,7 +126,11 @@ int exhaustiveColoring(Graph &g, int numColors, int t)
 	{
 		for (int color = 1; color < numColors; color++) {
 			increment(g, vItrRange.first, numColors, vItrRange.second);
-			numConflicts = checkConflicts(g);
+			tempNumConflicts = checkConflicts(g);
+
+			if (tempNumConflicts < numConflicts) {
+				numConflicts = tempNumConflicts;
+			}
 
 			// Check if time is expired and return
 			if ((clock() - startTime) / CLOCKS_PER_SEC >= t)
