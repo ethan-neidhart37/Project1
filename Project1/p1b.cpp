@@ -94,6 +94,53 @@ int checkConflicts(Graph &g)
 	return numConflicts;
 }
 
+void increment(Graph &g, Graph::vertex_iterator vItr, int numColors, Graph::vertex_iterator vEnd)
+{
+	g[*vItr].color++;
+	if (g[*vItr].color == numColors)
+	{
+		g[*vItr].color = 0;
+		increment(g, vItr + 1, numColors, vEnd);
+	}
+}
+
+int exhaustiveColoring(Graph &g, int numColors, int t)
+{
+	clock_t startTime = clock();
+
+	setNodeColors(g, 0);
+	int numConflicts = checkConflicts(g);
+
+	pair<Graph::vertex_iterator, Graph::vertex_iterator> vItrRange = vertices(g);
+
+	for (Graph::vertex_iterator vItr = vItrRange.first; vItr != vItrRange.second; ++vItr)
+	{
+		for (int color = 1; color < numColors; color++) {
+			increment(g, vItrRange.first, numColors, vItrRange.second);
+			numConflicts = checkConflicts(g);
+
+			// Check if time is expired and return
+			if ((clock() - startTime) / CLOCKS_PER_SEC >= t)
+			{
+				return numConflicts;
+			}
+		}
+	}
+}
+
+void printSolution(Graph &g, int numConflicts, string filename)
+{
+	ofstream myfile;
+	myfile.open((filename + ".output").c_str());
+
+	myfile << "Total Conflicts: " << numConflicts << endl;
+	for (int counter = 0; counter < num_vertices(g); ++counter)
+	{
+		myfile << counter << ": " << g[counter].color << endl;
+	}
+	myfile.close();
+}
+
 int main()
 {
 	char x;
@@ -104,12 +151,12 @@ int main()
 	// hard code it here for testing.
 
 	string fileFolder = "C:\\Users\\Ethan\\Documents\\GitHub\\Algorithms\\Project1\\Project1\\colors\\";
-	fileName = fileFolder + "color12-3.input";
+	fileName = fileFolder + "color12-3";
 
 	//   cout << "Enter filename" << endl;
 	//   cin >> fileName;
 
-	fin.open(fileName.c_str());
+	fin.open((fileName + ".input").c_str());
 	if (!fin)
 	{
 		cerr << "Cannot open " << fileName << endl;
@@ -145,21 +192,3 @@ int main()
 	}
 }
 
-int exhaustiveColoring(Graph &g, int numColors, int t)
-{
-	clock_t startTime = clock();
-
-	setNodeColors(g, 1);
-	int numConflicts = checkConflicts(g);
-
-	for (int color = 1; color <= numColors; color++) {
-
-	}
-
-
-	// Check if time is expired and return
-	if ((clock() - startTime) / CLOCKS_PER_SEC >= t)
-	{
-		return numConflicts;
-	}
-}
