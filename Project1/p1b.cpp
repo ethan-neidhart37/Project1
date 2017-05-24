@@ -1,5 +1,5 @@
 // File: p1b.cpp
-// Author: Ethan Neidhart
+// Author: Ethan Neidhart, Kevin Do
 // Code to read graph instances from a file.  Uses the Boost Graph Library (BGL).
 
 #include <iostream>
@@ -196,11 +196,12 @@ int exhaustiveColoring(Graph &g, int numColors, int t)
 	return numConflicts;
 }
 
-void printSolution(Graph &g, int numConflicts, string filename)
+void printSolution(Graph &g, int numConflicts, string filename, string folder)
 // Print the solution found.
 {
+	string filepath = folder + "output\\" + filename + ".output";
 	ofstream myfile;
-	myfile.open((filename + ".output").c_str());
+	myfile.open((filepath).c_str());
 
 	myfile << "Total Conflicts: " << numConflicts << endl;
 	for (int counter = 0; counter < num_vertices(g); ++counter)
@@ -222,19 +223,19 @@ int graphColoring()
 	// hard code it here for testing.
 
 	// Hard-coded location of files so that only file name must be entered
-	string fileFolder = "C:\\Users\\Ethan\\Documents\\GitHub\\Algorithms\\Project1\\Project1\\colors\\";
+	string fileFolder = "C:\\Users\\Ethan\\Documents\\GitHub\\Algorithms\\Project1\\Project1\\color\\";
 
 	//fileName = "color12-3";
 
 	cout << "Enter filename: ";
 	cin >> fileName;
 
-	fileName = fileFolder + fileName;
+	string filePath =  fileFolder  + "input\\" + fileName + ".input";
 
-	fin.open((fileName + ".input").c_str());
+	fin.open((filePath).c_str());
 	if (!fin)
 	{
-		cerr << "Cannot open " << fileName << endl;
+		cerr << "Cannot open " << filePath << endl;
 		exit(1);
 	}
 
@@ -254,7 +255,7 @@ int graphColoring()
 		// cout << g;
 
 		numConflicts = exhaustiveColoring(g, numColors, 600);
-		printSolution(g, numConflicts, fileName);
+		printSolution(g, numConflicts, fileName, fileFolder);
 	}
 	catch (indexRangeError &ex)
 	{

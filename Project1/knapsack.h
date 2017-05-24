@@ -1,5 +1,8 @@
 // Knapsack class
 // Version f08.1
+#include <iostream>
+
+using namespace std;
 
 class knapsack
 {
@@ -16,6 +19,7 @@ public:
 	void select(int);
 	void unSelect(int);
 	bool isSelected(int) const;
+	vector<bool> getSelected();
 
 private:
 	int numObjects;
@@ -168,7 +172,7 @@ ostream &operator<<(ostream &ostr, vector<bool> v)
 	for (int i = 0; i < v.size(); i++)
 		cout << v[i] << endl;
 
-	return ostr
+	return ostr;
 }
 
 void knapsack::select(int i)
@@ -206,4 +210,9 @@ bool knapsack::isSelected(int i) const
 		throw rangeError("Bad value in knapsack::getValue");
 
 	return selected[i];
+}
+
+inline vector<bool> knapsack::getSelected()
+{
+	return selected;
 }
